@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block title %}Registro Bodega{% endblock %}
+
+{% block body %}
+
+<!-- Action form -->
+<div style="display: flex; justify-content: center; align-items: center;">
+  <form action="/add_bodega" method="POST" class="form-control" style="background-color: transparent; color: #fff; padding: 20px; border: none; max-width: 400px;" enctype="multipart/form-data">
+
+    <div class="form-group" style="display: flex; flex-direction: column;">
+      <label for="bod-nombre">Nombre</label>
+      <input type="text" class="form-control" id="bod-nombre" placeholder="Enter name" name="bod-nombre" required>
+    </div>
+    
+    <div class="form-group" style="display: flex; flex-direction: column;">
+      <label for="bod-historia">Historia</label>
+      <input type="text" class="form-control" id="bod-historia" placeholder="Enter history" name="bod-historia" required>
+    </div>
+    
+    <div class="form-group" style="display: flex; flex-direction: column;">
+      <label for="bod-direccion_web">Web</label>
+      <input type="text" class="form-control" id="bod-direccion_web" placeholder="Enter URL" name="bod-direccion_web" required>
+    </div>
+    
+    <div class="form-group" style="display: flex; flex-direction: column;">
+      <label for="bod-id_region">Region</label>
+      <select class="form-control" id="bod-id_region" name="bod-id_region" required>
+        <option value="" style="color: black;">Escoger Region</option>
+        {% for region in regiones %}
+          <option value="{{ region.id_region }}" style="color: black;">{{ region.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <div class="form-group" style="display: flex; flex-direction: column;">
+      <label for="bod-imagen">Imagen</label>
+      <input type="file" class="form-control" id="bod-imagen" name="bod-imagen" required>
+    </div>
+
+    <button type="submit" class="btn btn-dark">Aceptar</button>
+
+  </form>
+</div>
+
+
+{% endblock body %}

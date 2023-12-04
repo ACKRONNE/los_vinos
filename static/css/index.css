@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  font-size: 20px;
+  color: #E1B95D;
+  background: rgba(12, 17, 19, 0);
+}
+
+.nav-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.nav-bar .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.container-midle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; 
+  height: 100%;
+}
+
+.nav-logo {
+  margin-top: 3vh;
+}
+
+/* Bodega */
+.nav-link:first-child {
+  margin-left: 3vh;
+  transform: rotate(-90deg);
+  transition: .5s;
+}
+
+/* Catalogo */
+.nav-link:nth-child(2) {
+  margin-right: 3vh;
+  transform: rotate(90deg);
+  transition: .5s;
+}
+
+/* Añada */
+.nav-link:nth-child(3) {
+  margin-top: auto;
+  margin-bottom: 3vh;
+  transition: .5s;
+}
+/* // */
+
+/* FIXME: Arreglar el hover de los links */
+/* Hovers */
+.nav-link:hover {
+  transform: rotate(0);
+  transition: 0.5s;
+}
+
+.nav-link:nth-child(3):hover {
+  scale: 1.2;
+}
+
+/* // */
+
+/* Video de fondo */
+.video-container {
+    width: 100%;
+}
+
+.video-container video {
+    position: absolute;
+    top: -1rem;
+    width: 100%;
+    height: 102.99%;
+    object-fit: cover;
+    z-index: -1;
+}
+/* // */
+

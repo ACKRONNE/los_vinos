@@ -1,0 +1,372 @@
+-- S E C U E N C I A S
+
+CREATE SEQUENCE seq_paispro
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+  
+CREATE SEQUENCE seq_region
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+  
+CREATE SEQUENCE seq_bodega
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+
+CREATE SEQUENCE seq_paises_importadores
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+
+CREATE SEQUENCE seq_vitis_vinifera
+  START WITH 2
+  INCREMENT BY 2
+  MAXVALUE 998; 
+
+CREATE SEQUENCE seq_clasificacion
+  start with 10
+  increment by 10
+  MAXVALUE 990;
+
+CREATE SEQUENCE seq_vinos
+  START WITH 5
+  INCREMENT BY 5
+  MAXVALUE 995;
+
+CREATE SEQUENCE seq_calificacion
+  start with 1
+  increment by 1
+  MAXVALUE 999;
+
+CREATE SEQUENCE seq_presentacion
+  START WITH 2
+  INCREMENT BY 2
+  MAXVALUE 998;
+
+CREATE SEQUENCE seq_organismo
+  START WITH 10
+  INCREMENT BY 10
+  MAXVALUE 990; 
+
+CREATE SEQUENCE seq_concursos
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+
+CREATE SEQUENCE seq_premios
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+
+CREATE SEQUENCE seq_costomuestra
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+
+CREATE SEQUENCE seq_inscripcion
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+
+CREATE SEQUENCE seq_muestracompite
+  START WITH 1
+  INCREMENT BY 1
+  MAXVALUE 999;
+-- / /
+
+-- C R E A T E S
+
+CREATE TABLE paises_productores ( 
+	id_pais_pro 			numeric(3) 		PRIMARY KEY DEFAULT NEXTVAL('seq_paispro'),
+	nombre 					varchar(40) 	NOT NULL 	UNIQUE,
+	continente 				char(2) 		NOT NULL,
+	descripcion_productor 	varchar(1500) 	NOT NULL,
+	hectareas_cultivadas 	decimal(8,2)	NOT NULL,
+	moneda 					varchar(7) 		NOT NULL,
+	CONSTRAINT continente_pais_pro 		CHECK (continente IN ('Am','Af','Eu','As','Oc')),
+	CONSTRAINT moneda_pais_pro 			CHECK (moneda IN ('euros','dolares'))
+);
+
+CREATE TABLE regiones ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3)		NOT NULL 	DEFAULT NEXTVAL('seq_region'),
+	nombre 					varchar(50) 	NOT NULL,
+	descripcion 			varchar (500) 	NOT NULL,
+	CONSTRAINT fk_region_pais FOREIGN KEY (id_pais_pro) REFERENCES paises_productores (id_pais_pro), 
+	CONSTRAINT pk_region PRIMARY KEY (id_pais_pro, id_region)
+);
+
+CREATE TABLE bodegas ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL 	DEFAULT NEXTVAL('seq_bodega'),
+	nombre 					varchar(50) 	NOT NULL 	UNIQUE,
+	historia 				varchar(1500) 	NOT NULL,
+	enlace_web 				varchar(50) 	NOT NULL 	UNIQUE,
+	direccion 				varchar(200) 	NOT NULL 	UNIQUE,
+	fecha_fundacion 		date 			NOT NULL,
+	resumen_vinos 			varchar(1500) 	NOT NULL,
+	CONSTRAINT fk_bodega_region 			FOREIGN KEY (id_pais_pro, id_region) REFERENCES regiones (id_pais_pro, id_region),
+	CONSTRAINT pk_bodega 					PRIMARY KEY (id_pais_pro, id_region, id_bodega)
+);
+
+CREATE TABLE paises_importadores ( 
+	id_pais_imp 			numeric(3) 		PRIMARY KEY DEFAULT NEXTVAL('seq_paises_importadores'),
+	nombre 					varchar(40) 	NOT NULL 	UNIQUE,
+	continente 				char(2) 		NOT NULL,	
+	CONSTRAINT continente_pais_imp CHECK (continente IN ('Am','Af','Eu','As','Oc'))
+);
+
+CREATE TABLE exportacion_pais_anual ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_pais_imp 			numeric(3) 		NOT NULL,
+	ano_exportacion 		date 			NOT NULL,
+	vol_hl 					numeric(4) 		NOT NULL,
+	CONSTRAINT fk_exp_bodega FOREIGN KEY (id_pais_pro, id_region, id_bodega) REFERENCES bodegas (id_pais_pro, id_region, id_bodega),
+	CONSTRAINT fk_exp_paisimp FOREIGN KEY (id_pais_imp) REFERENCES paises_importadores (id_pais_imp),
+	CONSTRAINT pk_exportacion_pais_anual PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_pais_imp, ano_exportacion)
+);
+
+CREATE TABLE telefonos ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	codigo_area 			numeric(4) 		NOT NULL,
+	numero 					numeric(10) 	NOT NULL, 
+	CONSTRAINT fk_tlf_bodega FOREIGN KEY (id_pais_pro, id_region, id_bodega) REFERENCES bodegas (id_pais_pro,id_region,id_bodega),
+	CONSTRAINT pk_tlf PRIMARY KEY (id_pais_pro, id_region, id_bodega, codigo_area, numero)
+);
+
+CREATE TABLE vitis_vinifera ( 
+	id_uva 					numeric(3) 		PRIMARY KEY 	DEFAULT NEXTVAL('seq_vitis_vinifera'),
+	nombre_variedad 		varchar(50) 	NOT NULL ,
+	tipo_uva 				varchar(10) 	NOT NULL,		
+	CONSTRAINT check_tipouva CHECK (tipo_uva IN ('blanca','tinta'))
+);
+
+CREATE TABLE denominaciones_origen ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_uva 					numeric(3) 		NOT NULL,
+	nombre 					varchar(50) 	NOT NULL ,
+	descripcion 			varchar(500),
+	CONSTRAINT fk_DO_region FOREIGN KEY (id_pais_pro, id_region) REFERENCES regiones (id_pais_pro, id_region),
+	CONSTRAINT fk_DO_vitis FOREIGN KEY (id_uva) REFERENCES vitis_vinifera (id_uva),
+	CONSTRAINT pk_DO PRIMARY KEY (id_pais_pro, id_region, id_uva)
+);
+
+CREATE TABLE clasificaciones ( 
+	id_clasificacion 		numeric(3) 		PRIMARY KEY 	DEFAULT NEXTVAL('seq_clasificacion'),
+	nombre 					varchar(50) 	NOT NULL,
+	nivel 					integer 		NOT NULL,
+	descripcion 			varchar(200) 	NOT NULL,
+	id_padre_clasificacion 	numeric(3),		
+	CONSTRAINT fk_padre_clasi FOREIGN KEY (id_padre_clasificacion) REFERENCES clasificaciones (id_clasificacion)
+);
+
+CREATE TABLE vino_marca ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_vino 				numeric(3) 		NOT NULL 	DEFAULT NEXTVAL('seq_vinos'),
+	nombre 					varchar(70) 	NOT NULL,
+	meses_maduracion 		numeric(2) 		NOT NULL,
+	elaboracion 			varchar(1500) 	NOT NULL,
+	maridaje 				varchar(500) 	NOT NULL,
+	promedio_años_consumo 	integer 		NOT NULL,
+	temp_servicio 			integer 		NOT NULL,
+	ph 						decimal(4,2) 	NOT NULL,
+	descripcion_cata 		varchar(1500) 	NOT NULL,
+	grado_alcohol 			decimal(4,2) 	NOT NULL,
+	acidez 					decimal(4,2) 	NOT NULL,
+	imagen_vino 			bytea, --FIXME: Cambiar a mandatorio y colocarle UNIQUE
+	id_clasificacion 		numeric(3) 		NOT NULL,
+	CONSTRAINT fk_vino_bodega FOREIGN KEY (id_pais_pro, id_region, id_bodega) REFERENCES bodegas (id_pais_pro,id_region,id_bodega),
+	CONSTRAINT fk_vino_clasificacion FOREIGN KEY (id_clasificacion) REFERENCES clasificaciones (id_clasificacion),
+	CONSTRAINT pk_vino_marca PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_vino)
+);
+
+CREATE TABLE variedad_vino ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_vino 				numeric(3) 		NOT NULL,
+	id_uva 					numeric(3) 		NOT NULL,
+	CONSTRAINT fk_variedad_vino FOREIGN KEY (id_pais_pro, id_region, id_bodega, id_vino) REFERENCES vino_marca (id_pais_pro, id_region, id_bodega, id_vino),
+	CONSTRAINT fk_variedad_uva FOREIGN KEY (id_uva) REFERENCES vitis_vinifera (id_uva),
+	CONSTRAINT pk_variedad PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_vino, id_uva)
+);
+
+CREATE TABLE produccion_anual_vino ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_vino 				numeric(3) 		NOT NULL,
+	ano_produccion 			date 			NOT NULL,
+	botellas_producidas 	integer 		NOT NULL,
+	total_dest_exp_hl 		integer 		NOT NULL,
+	clasificacion_añada 	varchar(5) 		NOT NULL,
+	CONSTRAINT fk_produccion_vino FOREIGN KEY (id_pais_pro, id_region, id_bodega, id_vino) REFERENCES vino_marca (id_pais_pro, id_region, id_bodega, id_vino),
+	CONSTRAINT pk_produccion PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_vino, ano_produccion),
+	CONSTRAINT check_clasi_añada CHECK (clasificacion_añada IN ('E','MB'))
+);
+
+CREATE TABLE calificacion_anual ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_vino 				numeric(3) 		NOT NULL,
+	ano_produccion 			date 			NOT NULL,
+	id_calificacion_anual 	numeric(3) 		NOT NULL 		DEFAULT NEXTVAL('seq_calificacion'),
+	puntaje 				numeric(3) 		NOT NULL,
+	critico 				varchar(50) 	NOT NULL,
+	CONSTRAINT fk_calificacion_produccion 	FOREIGN KEY (id_pais_pro, id_region, id_bodega, id_vino, ano_produccion) REFERENCES produccion_anual_vino (id_pais_pro, id_region, id_bodega, id_vino, ano_produccion),
+	CONSTRAINT pk_calificacion_anual 		PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_vino, ano_produccion, id_calificacion_anual)
+);
+
+CREATE TABLE presentacion ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_vino 				numeric(3) 		NOT NULL,
+	id_presentacion 		numeric(3) 		NOT NULL 		DEFAULT NEXTVAL('seq_presentacion'),
+	tipo 					varchar(10) 	NOT NULL,
+	descripcion 			varchar(700),
+	cantidad_botellas 		integer,
+	CONSTRAINT fk_presentacion_vino FOREIGN KEY (id_pais_pro, id_region, id_bodega,id_vino) REFERENCES vino_marca (id_pais_pro, id_region, id_bodega, id_vino),
+	CONSTRAINT pk_presentacion PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_vino, id_presentacion),
+	CONSTRAINT check_tipopresentacion CHECK (tipo IN ('botella','caja'))
+);
+
+CREATE TABLE historico_precio ( 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_vino 				numeric(3) 		NOT NULL,
+	id_presentacion 		numeric(3) 		NOT NULL,
+	ano_historico 			date 			NOT NULL,
+	precio 					decimal(6,2) 	NOT NULL,
+	CONSTRAINT fk_historico_presentacion FOREIGN KEY (id_pais_pro, id_region, id_bodega, id_vino, id_presentacion) REFERENCES presentacion (id_pais_pro, id_region, id_bodega, id_vino, id_presentacion),
+	CONSTRAINT pk_historico PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_vino, id_presentacion, ano_historico)
+);
+
+CREATE TABLE catadores ( 
+	doc_identidad 			numeric(9) 		PRIMARY KEY,
+	primer_nombre 			varchar(50) 	NOT NULL,
+	primer_apellido 		varchar(50) 	NOT NULL,
+	segundo_apellido 		varchar(50) 	NOT NULL,
+	fecha_nacimiento 		date			NOT NULL,
+	nivel 					varchar(10) 	NOT NULL,
+	segundo_nombre 			varchar(50),
+	resumen_curricular 		varchar(300),
+	CONSTRAINT check_nivel CHECK (nivel IN ('aprendiz','critico'))
+);
+
+CREATE TABLE organismos ( 
+	id_organismo 			numeric(3) 		PRIMARY KEY 	DEFAULT NEXTVAL('seq_organismo'),
+	nombre 					varchar(70) 	NOT NULL 		UNIQUE,
+	descripcion 			varchar(255) 	NOT NULL,
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	CONSTRAINT fk_organismo_paispro FOREIGN KEY (id_pais_pro) REFERENCES paises_productores (id_pais_pro)
+);
+
+CREATE TABLE concursos ( 
+	id_concurso 			numeric(3) 		PRIMARY KEY 	DEFAULT NEXTVAL('seq_concursos'),
+	nombre 					varchar(50) 	NOT NULL,
+	descripcion 			varchar(255) 	NOT NULL,
+	tipo_concurso 			char(5) 		NOT NULL,
+	alcance 				varchar(15) 	NOT NULL,
+	tipo_cata 				varchar(20) 	NOT NULL,
+	CONSTRAINT check_tipoconcurso 	CHECK (tipo_concurso IN ('cataV','cataA')),
+	CONSTRAINT check_alcance 		CHECK (alcance IN ('nacional','internacional')),
+	CONSTRAINT check_tipocata 		CHECK (tipo_cata IN ('a ciegas','varietal','horizontal','vertical','varietal/vertical'))
+);
+
+CREATE TABLE planifica ( 
+	id_organismo 			numeric(3) 		NOT NULL,
+	id_concurso 			numeric(3) 		NOT NULL,
+	CONSTRAINT fk_planifica_organismo FOREIGN KEY (id_organismo) REFERENCES organismos (id_organismo),
+	CONSTRAINT fk_planifica_concurso FOREIGN KEY (id_concurso) REFERENCES concursos (id_concurso),
+	CONSTRAINT pk_planifica PRIMARY KEY (id_organismo, id_concurso)
+);
+
+CREATE TABLE premios ( 
+	id_concurso 			numeric(3) 		NOT NULL,
+	id_premio 				numeric(3) 		NOT NULL 		DEFAULT NEXTVAL('seq_premios'),
+	nombre 					varchar(50) 	NOT NULL,
+	descripcion 			varchar(255) 	NOT NULL,
+	tipo_premio 			varchar(15) 	NOT NULL,
+	posicion 				integer 		NOT NULL,
+	premio_monetario 		decimal(9,2),
+	CONSTRAINT fk_premios_concurso FOREIGN KEY (id_concurso) REFERENCES concursos (id_concurso),
+	CONSTRAINT pk_premios PRIMARY KEY (id_concurso, id_premio),
+	CONSTRAINT check_tipopremio CHECK (tipo_premio IN ('medalla','certificado','otro'))
+);
+
+CREATE TABLE edicion ( 
+	id_concurso 				numeric(3) 		NOT NULL,
+	numero_edicion 				numeric(3) 		NOT NULL,
+	fecha_ini 					date 			NOT NULL,
+	fecha_fin 					date 			NOT NULL,
+	fecha_lim_inscripcion 		date 			NOT NULL,
+	costo_inscripcion 			decimal(9,2) 	NOT NULL,
+	fecha_lim_envio_muestra 	date,
+	CONSTRAINT fk_edicion_concurso FOREIGN KEY (id_concurso) REFERENCES concursos (id_concurso),
+	CONSTRAINT pk_edicion PRIMARY KEY (id_concurso, numero_edicion)
+);
+
+CREATE TABLE costo_muestra ( 
+	id_concurso 			numeric(3) 			NOT NULL,
+	numero_edicion 			numeric(3) 			NOT NULL,
+	id_costo_muestra 		numeric(3) 			NOT NULL 	DEFAULT NEXTVAL('seq_costomuestra'),
+	numero_muestras 		integer 			NOT NULL,
+	costo 					decimal(9,2) 		NOT NULL,
+	CONSTRAINT fk_costo_edicion FOREIGN KEY (id_concurso, numero_edicion) REFERENCES edicion (id_concurso, numero_edicion),
+	CONSTRAINT pk_costomuestra PRIMARY KEY (id_concurso, numero_edicion, id_costo_muestra)
+);
+
+CREATE TABLE jueces ( 
+	id_concurso 			numeric(3) 			NOT NULL,
+	numero_edicion 			numeric(3) 			NOT NULL,
+	doc_catador_critico 	numeric(9)	 		NOT NULL,
+	CONSTRAINT fk_jueces_edicion 	FOREIGN KEY (id_concurso, numero_edicion) REFERENCES edicion (id_concurso, numero_edicion),
+	CONSTRAINT fk_jueces_catadores 	FOREIGN KEY (doc_catador_critico) REFERENCES catadores (doc_identidad),
+	CONSTRAINT pk_jueces 			PRIMARY KEY (id_concurso, numero_edicion, doc_catador_critico)
+);
+
+CREATE TABLE inscripciones ( 
+	id_concurso 			numeric(3) 		NOT NULL,
+	numero_edicion 			numeric(3) 		NOT NULL,
+	id_participacion 		numeric(3) 		NOT NULL 		DEFAULT NEXTVAL('seq_inscripcion'),
+	fecha_incripcion 		date 			NOT NULL,
+	posicion_catador 		integer,
+	doc_catador_aprendiz 	numeric(9),
+	id_pais_pro 			numeric(3),
+	id_region 				numeric(3),
+	id_bodega 				numeric(3),
+	CONSTRAINT fk_inscripcion_bodega FOREIGN KEY (id_pais_pro, id_region, id_bodega) REFERENCES bodegas (id_pais_pro, id_region, id_bodega),
+	CONSTRAINT fk_incripcion_edicion FOREIGN KEY (id_concurso, numero_edicion) REFERENCES edicion (id_concurso, numero_edicion),
+	CONSTRAINT fk_incripcion_catadores FOREIGN KEY (doc_catador_aprendiz) REFERENCES catadores (doc_identidad),
+	CONSTRAINT pk_incripcion PRIMARY KEY (id_concurso, numero_edicion, id_participacion)
+);
+
+CREATE TABLE muestra_compite ( 
+	id_concurso 			numeric(3) 		NOT NULL,
+	numero_edicion 			numeric(3) 		NOT NULL,
+	id_participacion 		numeric(3) 		NOT NULL,
+	id_muestra_compite 		numeric(3) 		NOT NULL 	DEFAULT NEXTVAL('seq_muestracompite'),
+	ano_anada 				date 			NOT NULL,
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	id_vino 				numeric(3) 		NOT NULL,
+	posicion_muestra 		integer,
+	CONSTRAINT fk_muestracompite_inscripcion FOREIGN KEY (id_concurso, numero_edicion, id_participacion) REFERENCES inscripciones (id_concurso, numero_edicion, id_participacion),
+	CONSTRAINT fk_muestracompite_vino FOREIGN KEY (id_pais_pro, id_region, id_bodega, id_vino) REFERENCES vino_marca (id_pais_pro, id_region, id_bodega, id_vino),
+	CONSTRAINT pk_muestracompite PRIMARY KEY (id_concurso, numero_edicion, id_participacion, id_muestra_compite)
+);
+-- / /

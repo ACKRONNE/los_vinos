@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    background: #0C1113;
+    text-decoration: none;
+}
+
+::-webkit-scrollbar {
+    display: none; 
+}
+
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    font-weight: 400;
+}
+
+.navbar .logo {
+    margin-left: 2rem;
+}
+
+.nav-items {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-item {
+    text-transform: uppercase;
+    color: #DFD3BD;
+    margin-right: 3rem;
+}

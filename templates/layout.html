@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title -->
+    <title>{% block title %}{% endblock %}</title>
+    <!-- // -->
+
+    <!-- Browser tab icon -->
+    <link rel="shortcut icon" type="x-icon" href="/static/img/favicon.svg">
+    <!-- // -->
+
+    <!-- Agregar los enlaces a los archivos CSS y JavaScript de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Archivos Internos -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}">
+    <!-- // -->
+    
+</head>
+
+<body>    
+    <!-- Navbar -->
+    <nav class="navbar">
+            
+            <!-- logo -->
+            <a href="{{ url_for('index.index') }}" style="pointer-events: auto;">
+                <div href="{{ url_for('index.index') }}" class="nav-logo" style="width: 7rem;" style="pointer-events: auto;">
+                    <object class="logo" href="{{ url_for('index.index') }}" data="{{ url_for('static', filename='img/LogoBlack.svg') }}" type="image/svg+xml" style="pointer-events: none;"></object>
+                </div>
+            </a>
+            <!-- // -->
+
+            <div class="nav-items">
+                <!-- Enlaces de navegacion -->
+                <a class="nav-item" href="{{ url_for('bodega.addBodega') }}">Bodega</a>
+                <a class="nav-item" href="{{ url_for('bodega.addBodega') }}">Catálogo</a>
+                <a class="nav-item" href="{{ url_for('bodega.addBodega') }}">Añada</a>
+            </div>
+                
+            <!-- // -->
+        </div>
+    </nav>
+
+    {% block body %}
+    {% endblock %}
+
+    <script>
+        function guardarSeleccion(value) {
+            $.ajax({
+                url: '/add_bodega',
+                type: 'POST',
+                data: { 'bod-id_region': value },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
