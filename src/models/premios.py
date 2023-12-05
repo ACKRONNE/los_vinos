@@ -6,7 +6,7 @@ class Premios(db.Model):
     __tablename__ = 'premios'
     
     id_concurso = Column(Numeric(3), ForeignKey('concursos.id_concurso'), nullable=False)
-    id_premio = Column(Numeric(3), primary_key=True, default=Sequence('seq_premios'))
+    id_premio = Column(Numeric(3), default=Sequence('seq_premios'))
     nombre = Column(String(50), nullable=False)
     descripcion = Column(String(255), nullable=False)
     tipo_premio = Column(String(15), nullable=False)

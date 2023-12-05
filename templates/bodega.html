@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block title %}Registro Bodega{% endblock %}
+
+{% block body %}
+
+<!-- Action form -->
+<form action="/add_bodega" method="POST" class="form-control">
+  <div class="info-general">
+    <div class="left-column">
+      <div class="form-group">
+        <label for="bod-nombre">Nombre:</label>
+        <input type="text" id="bod-nombre" name="bod-nombre" required>
+      </div>
+
+      <div class="form-group">
+        <label for="bod-enlace_web">Enlace Web:</label>
+        <input type="text" id="bod-enlace_web" name="bod-enlace_web" required>
+      </div>
+
+      <div class="form-group">
+        <label for="bod-fecha_fundacion">Fecha de Fundacion:</label>
+        <input type="date" id="bod-fecha_fundacion" name="bod-fecha_fundacion" required>
+      </div>
+    </div>
+
+    <div class="right-column">
+      <div class="form-group">
+        <label for="bod-historia">Historia:</label>
+        <textarea id="bod-historia" name="bod-historia" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="bod-direccion">Direccion:</label>
+        <input type="text" id="bod-direccion" name="bod-direccion" required>
+      </div>
+
+      <div class="form-group">
+        <label for="bod-resumen_vinos">Resumen de Vinos:</label>
+        <textarea id="bod-resumen_vinos" name="bod-resumen_vinos" required></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-container">
+    <button class="submit-btn" type="submit">Aceptar</button>
+  </div>
+</form>
+
+
+{% endblock body %}
