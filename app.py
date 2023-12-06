@@ -1,33 +1,32 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from src.database.db import db
 
 # Entidades de la BD
-from src.models.bodegas import Bodegas
-from src.models.calificacion_anual import CalificacionAnual
-from src.models.catadores import Catadores
-from src.models.clasificaciones import Clasificaciones
-from src.models.concursos import Concursos
-from src.models.costo_muestra import CostoMuestra
-from src.models.denominaciones_origen import DenominacionesOrigen
-from src.models.edicion import Edicion
-from src.models.exportacion_pais_anual import ExportacionPaisAnual
-from src.models.historico_precio import HistoricoPrecio
-from src.models.inscripciones import Inscripciones
-from src.models.jueces import Jueces
-from src.models.muestra_compite import MuestraCompite
-from src.models.organismos import Organismos
-from src.models.paises_importadores import PaisesImportadores
-from src.models.paises_productores import PaisesProductores
-from src.models.planifica import Planifica
-from src.models.premios import Premios
-from src.models.presentacion import Presentacion
-from src.models.produccion_anual_vino import ProduccionAnualVino
-from src.models.regiones import Regiones
-from src.models.telefonos import Telefonos
-from src.models.variedad_vino import VariedadVino
-from src.models.vino_marca import VinoMarca
-from src.models.vitis_vinifera import VitisVinifera
+# from src.models.bodegas import Bodegas
+# from src.models.calificacion_anual import CalificacionAnual
+# from src.models.catadores import Catadores
+# from src.models.clasificaciones import Clasificaciones
+# from src.models.concursos import Concursos
+# from src.models.costo_muestra import CostoMuestra
+# from src.models.denominaciones_origen import DenominacionesOrigen
+# from src.models.edicion import Edicion
+# from src.models.exportacion_pais_anual import ExportacionPaisAnual
+# from src.models.historico_precio import HistoricoPrecio
+# from src.models.inscripciones import Inscripciones
+# from src.models.jueces import Jueces
+# from src.models.muestra_compite import MuestraCompite
+# from src.models.organismos import Organismos
+# from src.models.paises_importadores import PaisesImportadores
+# from src.models.paises_productores import PaisesProductores
+# from src.models.planifica import Planifica
+# from src.models.premios import Premios
+# from src.models.presentacion import Presentacion
+# from src.models.produccion_anual_vino import ProduccionAnualVino
+# from src.models.regiones import Regiones
+# from src.models.telefonos import Telefonos
+# from src.models.variedad_vino import VariedadVino
+# from src.models.vino_marca import VinoMarca
+# from src.models.vitis_vinifera import VitisVinifera
 # //
 
 # Objetos de las rutas

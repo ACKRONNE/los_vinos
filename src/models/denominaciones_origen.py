@@ -9,7 +9,7 @@ class DenominacionesOrigen(db.Model):
     id_region = Column(Numeric(3), nullable=False)
     id_uva = Column(Numeric(3), ForeignKey('vitis_vinifera.id_uva'), nullable=False)
     nombre = Column(String(50), nullable=False)
-    descripcion = Column(String(500))
+    descripcion = Column(String(2000))
 
     __table_args__ = (
         ForeignKeyConstraint(['id_pais_pro', 'id_region'], ['regiones.id_pais_pro', 'regiones.id_region'], name='fk_DO_region'),

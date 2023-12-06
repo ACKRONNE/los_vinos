@@ -6,7 +6,7 @@ class Concursos(db.Model):
     
     id_concurso = Column(Numeric(3), primary_key=True, default=Sequence('seq_concursos'))
     nombre = Column(String(50), nullable=False)
-    descripcion = Column(String(255), nullable=False)
+    descripcion = Column(String(1500), nullable=False)
     tipo_concurso = Column(String(5), nullable=False)
     alcance = Column(String(15), nullable=False)
     tipo_cata = Column(String(20), nullable=False)

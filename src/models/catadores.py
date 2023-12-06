@@ -11,7 +11,7 @@ class Catadores(db.Model):
     fecha_nacimiento = Column(Date, nullable=False)
     nivel = Column(String(10), nullable=False)
     segundo_nombre = Column(String(50))
-    resumen_curricular = Column(String(300))
+    resumen_curricular = Column(String(1000))
     
     __table_args__ = (
         CheckConstraint(nivel.in_(['aprendiz', 'critico']), name='check_nivel'),
