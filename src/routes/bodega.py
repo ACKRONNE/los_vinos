@@ -27,15 +27,14 @@ def addBodega():
         
         # Obtencion de la PK del pais
         _nombrePai = request.form['bod-nombrePai']
-        _id_pais_pro = select(PaisesProductores.id_pais_pro).where(PaisesProductores.nombre == _nombrePai)
+        _id_pais_pro = select(PaisesProductores.id_pais_pro).where(PaisesProductores.nombre == _nombrePai).scalar_subquery()
         # //
         
         # Obtencion de PK de la region
         get_reg = Regiones.query.filter_by(id_pais_pro=_id_pais_pro).all()
         _nombreReg = request.form['bod-nombreReg']
-        _id_region = select(Regiones.id_region).where(Regiones.nombre == _nombreReg)
+        _id_region = select(Regiones.id_region).where(Regiones.nombre == _nombreReg).scalar_subquery()
         # //
-        
         
         # Atributos de bodega
         _nombre =  request.form['bod-nombre']
@@ -47,7 +46,9 @@ def addBodega():
         # //
         
         # Se inserta la bodega en la tabla
-        new_bod = Bodegas(
+        new_bod = Bodegas (
+            _id_pais_pro,
+            _id_region,
             _nombre,
             _historia,
             _enlace_web,
@@ -64,8 +65,7 @@ def addBodega():
         # //
         
         # Funcion para obtener el id de la bodega recien creada
-        _id_bodega = Bodegas.query.filter_by(nombre=_nombre).first()
-        # //
+        _id_bodega = Bodegas.query.filter_by(nombre=_nombre).first().id_bodega        # //
         
         # Atributos de telefono
         _codigo_area = request.form['tlf-codigo-area']
@@ -88,7 +88,7 @@ def addBodega():
         flash("Telefono Agregado con exito")
         # //
 
-        return render_template('bodega.html', get_pai=get_pai)
+        return render_template('index.html')
     else:
         return render_template('bodega.html', get_pai=get_pai)
 # //   
