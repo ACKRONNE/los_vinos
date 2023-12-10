@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify
 from src.database.db import db
 from sqlalchemy import select
 
@@ -21,7 +21,7 @@ bod = Blueprint('bodega', __name__)
 @bod.route('/add_bodega', methods=['GET','POST'])
 def addBodega():
     
-    get_pai = PaisesProductores.query.all() 
+    get_pai = PaisesProductores.query.all()
     
     if request.method == "POST":
         
@@ -31,7 +31,6 @@ def addBodega():
         # //
         
         # Obtencion de PK de la region
-        get_reg = Regiones.query.filter_by(id_pais_pro=_id_pais_pro).all()
         _nombreReg = request.form['bod-nombreReg']
         _id_region = select(Regiones.id_region).where(Regiones.nombre == _nombreReg).scalar_subquery()
         # //
@@ -64,8 +63,9 @@ def addBodega():
         flash("Bodega Agregada con exito")
         # //
         
-        # Funcion para obtener el id de la bodega recien creada
-        _id_bodega = Bodegas.query.filter_by(nombre=_nombre).first().id_bodega        # //
+        # Obtener el id de la bodega recien creada
+        _id_bodega = Bodegas.query.filter_by(nombre=_nombre).first().id_bodega 
+        # //
         
         # Atributos de telefono
         _codigo_area = request.form['tlf-codigo-area']
@@ -98,6 +98,7 @@ def addBodega():
 def get_regions():
     _nombrePai = request.form.get('bod-nombrePai')
     _id_pais_pro = select(PaisesProductores.id_pais_pro).where(PaisesProductores.nombre == _nombrePai).scalar_subquery()
+    
     get_reg = Regiones.query.filter_by(id_pais_pro=_id_pais_pro).all()
     return jsonify([region.nombre for region in get_reg])
 # //

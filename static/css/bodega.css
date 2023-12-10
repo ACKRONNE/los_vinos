@@ -4,7 +4,7 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     outline: none;
-    
+    color: #DFD3BD;
 }
 
 input:focus,
@@ -153,6 +153,7 @@ select#bod-nombreReg option {
     border: none;
     font-size: 1rem;
     cursor: pointer;
+    color: #DFD3BD;
 
     border: #FFC540 1px solid;
 

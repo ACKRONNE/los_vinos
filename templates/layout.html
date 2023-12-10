@@ -21,7 +21,6 @@
 
     <!-- Archivos Internos -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bodega.css') }}">
     <!-- // -->
     
 </head>
@@ -33,7 +32,7 @@
             <!-- logo -->
             <a href="{{ url_for('index.index') }}" style="pointer-events: auto;">
                 <div href="{{ url_for('index.index') }}" class="nav-logo" style="width: 7rem;" style="pointer-events: auto;">
-                    <object class="logo" href="{{ url_for('index.index') }}" data="{{ url_for('static', filename='img/LogoBlack.svg') }}" type="image/svg+xml" style="pointer-events: none;"></object>
+                    {% block logo %}<object class="logo" href="{{ url_for('index.index') }}" data="{{ url_for('static', filename='img/LogoBlack.svg') }}" type="image/svg+xml" style="pointer-events: none;"></object>{% endblock %}
                 </div>
             </a>
             <!-- // -->
@@ -41,7 +40,7 @@
             <div class="nav-items">
                 <!-- Enlaces de navegacion -->
                 <a class="nav-item" href="{{ url_for('bodega.addBodega') }}">Bodega</a>
-                <a class="nav-item" href="#">Catálogo</a>
+                <a class="nav-item" href="{{ url_for('catalogo.addCatalogo') }}">Catálogo</a>
                 <a class="nav-item" href="#">Añada</a>
             </div>
                 

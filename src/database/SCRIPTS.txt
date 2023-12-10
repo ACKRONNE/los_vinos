@@ -177,7 +177,7 @@ CREATE TABLE vino_marca (
 	meses_maduracion 		numeric(2) 		NOT NULL,
 	elaboracion 			varchar(1500) 	NOT NULL,
 	maridaje 				varchar(500) 	NOT NULL,
-	promedio_años_consumo 	integer 		NOT NULL,
+	promedio_anos_consumo 	integer 		NOT NULL,
 	temp_servicio 			integer 		NOT NULL,
 	ph 						decimal(4,2) 	NOT NULL,
 	descripcion_cata 		varchar(1500) 	NOT NULL,
@@ -209,10 +209,10 @@ CREATE TABLE produccion_anual_vino (
 	ano_produccion 			date 			NOT NULL,
 	botellas_producidas 	integer 		NOT NULL,
 	total_dest_exp_hl 		integer 		NOT NULL,
-	clasificacion_añada 	varchar(5) 		NOT NULL,
+	clasificacion_anada 	varchar(5) 		NOT NULL,
 	CONSTRAINT fk_produccion_vino FOREIGN KEY (id_pais_pro, id_region, id_bodega, id_vino) REFERENCES vino_marca (id_pais_pro, id_region, id_bodega, id_vino),
 	CONSTRAINT pk_produccion PRIMARY KEY (id_pais_pro, id_region, id_bodega, id_vino, ano_produccion),
-	CONSTRAINT check_clasi_añada CHECK (clasificacion_añada IN ('E','MB'))
+	CONSTRAINT check_clasi_anada CHECK (clasificacion_anada IN ('E','MB','B'))
 );
 
 CREATE TABLE calificacion_anual ( 
@@ -370,3 +370,6 @@ CREATE TABLE muestra_compite (
 	CONSTRAINT pk_muestracompite PRIMARY KEY (id_concurso, numero_edicion, id_participacion, id_muestra_compite)
 );
 -- / /
+
+ALTER TABLE vitis_vinifera
+ADD CONSTRAINT uni_compues_nom_tipo UNIQUE (nombre_variedad,tipo_uva);
