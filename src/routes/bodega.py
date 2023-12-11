@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, redirect
 from src.database.db import db
 from sqlalchemy import select
 
@@ -88,7 +88,7 @@ def addBodega():
         flash("Telefono Agregado con exito")
         # //
 
-        return render_template('index.html')
+        return redirect('index.html')
     else:
         return render_template('bodega.html', get_pai=get_pai)
 # //   

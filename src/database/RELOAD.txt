@@ -1,3 +1,4 @@
+-- S E C U E N C I A S
 ALTER SEQUENCE seq_paispro RESTART;
 ALTER SEQUENCE seq_region RESTART;
 ALTER SEQUENCE seq_bodega RESTART;
@@ -13,3 +14,31 @@ ALTER SEQUENCE seq_premios RESTART;
 ALTER SEQUENCE seq_costomuestra RESTART;
 ALTER SEQUENCE seq_inscripcion RESTART;
 ALTER SEQUENCE seq_muestracompite RESTART;
+
+
+-- D R O P
+DROP TABLE paises_productores CASCADE;
+DROP TABLE regiones CASCADE;
+DROP TABLE bodegas CASCADE;
+DROP TABLE paises_importadores CASCADE;
+DROP TABLE exportacion_pais_anual CASCADE;
+DROP TABLE telefonos CASCADE;
+DROP TABLE vitis_vinifera CASCADE;
+DROP TABLE denominaciones_origen CASCADE;
+DROP TABLE clasificaciones CASCADE;
+DROP TABLE vino_marca CASCADE;
+DROP TABLE variedad_vino CASCADE;
+DROP TABLE produccion_anual_vino CASCADE;
+DROP TABLE calificacion_anual CASCADE;
+DROP TABLE presentacion CASCADE;
+DROP TABLE historico_precio CASCADE;
+DROP TABLE catadores CASCADE;
+DROP TABLE organismos CASCADE;
+DROP TABLE concursos CASCADE;
+DROP TABLE planifica CASCADE;
+DROP TABLE premios CASCADE;
+DROP TABLE edicion CASCADE;
+DROP TABLE costo_muestra CASCADE;
+DROP TABLE jueces CASCADE;
+DROP TABLE inscripciones CASCADE;
+DROP TABLE muestra_compite CASCADE;

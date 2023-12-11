@@ -83,7 +83,7 @@ CREATE TABLE paises_productores (
 	nombre 					varchar(40) 	NOT NULL 	UNIQUE,
 	continente 				char(2) 		NOT NULL,
 	descripcion_productor 	varchar(1500) 	NOT NULL,
-	hectareas_cultivadas 	integer		 	NOT NULL, --FIXME: Tiene que ser un numero real ¿?
+	hectareas_cultivadas 	numeric(8,2)	NOT NULL,
 	moneda 					varchar(7) 		NOT NULL,
 	CONSTRAINT continente_pais_pro 		CHECK (continente IN ('Am','Af','Eu','As','Oc')),
 	CONSTRAINT moneda_pais_pro 			CHECK (moneda IN ('euros','dolares'))

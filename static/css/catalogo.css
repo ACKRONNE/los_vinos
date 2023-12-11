@@ -1,17 +1,27 @@
 body {
-    background: black;
-    color: black;
+    background-image: url('../img/catalogoBackground.jpg');
+    background-size: cover;
+    outline: none;
+    color: whitesmoke;
+}
+
+.nav-item {
+    color: #0086FF;
+}
+
+.p-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 /* vino-form.css */
-
-/* General Form Styling */
 .vino-info {
     font-family: Arial, sans-serif;
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
-    background: #f2f2f2;
     border-radius: 8px;
 }
 
@@ -20,16 +30,29 @@ body {
     margin-bottom: 8px;
 }
 
+.eliminar-ralla {
+    color: transparent;
+}
+
 .vino-info input[type="text"],
 .vino-info input[type="number"],
-.vino-info input[type="file"],
 .vino-info textarea {
     width: 100%;
     padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    margin-bottom: 30px;
+    border-style: none;
+    border-bottom: 1px solid #ddd;
+    color: #ddd;
+    background: rgba(159, 159, 159, 0);
     box-sizing: border-box; /* Make sure padding doesn't affect the total width */
+}
+
+.vino-info input[type="file"] {
+    border-style: none;
+    width: 100%;
+    background: rgba(159, 159, 159, 0);
+    box-sizing: border-box; /* Make sure padding doesn't affect the total width */
+    margin-bottom: 330px;
 }
 
 .vino-info textarea {
@@ -44,10 +67,11 @@ body {
 /* General Form Styling */
 .vino-info, .presentacion, .variedad {
     font-family: Arial, sans-serif;
-    max-width: 600px;
+    max-width: 70%;
     margin: 20px auto;
-    padding: 20px;
-    background: #f2f2f2;
+    padding: 40px;
+    background: rgba(0, 61, 128, 0.10);
+    backdrop-filter: blur(10px);
     border-radius: 8px;
 }
 
@@ -63,12 +87,14 @@ body {
 .presentacion input[type="text"],
 .presentacion input[type="number"],
 .presentacion textarea {
-    width: 100%;
+    width: 80%;
     padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    margin-bottom: 30px;
     box-sizing: border-box; 
+    border-style: none ;
+    color: white;
+    border-bottom: 1px solid #ddd;
+    background: rgba(0, 61, 128, 0);
 }
 
 .vino-info textarea, .presentacion textarea {
@@ -112,11 +138,12 @@ select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    border-style: none;
     box-sizing: border-box;
-    background-color: #f2f2f2;
+    background: rgba(0, 61, 128, 0);
     font-size: 16px;
     margin-bottom: 20px;
-    color: black;
+    color: white;
 }
 
 option {
@@ -144,7 +171,7 @@ option {
       cursor: pointer;
       color: white;
 
-      border: #FFC540 1px solid;
+      border: #0086FF 2px solid;
   
       border-radius: 8px;
       background: rgba(159, 159, 159, 0.02);

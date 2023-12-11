@@ -6,8 +6,30 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/catalogo.css') }}">
 
 <!-- Action form -->
-<form action="{{ url_for('catalogo.addCatalogo') }}" method="POST" class="form-control">
-    
+<!-- Navbar -->
+<nav class="navbar">
+      
+  <!-- logo -->
+  <a href="{{ url_for('index.index') }}" style="pointer-events: auto;">
+      <div href="{{ url_for('index.index') }}" class="nav-logo" style="width: 7rem;" style="pointer-events: auto;">
+          {% block logo %}<object class="logo" href="{{ url_for('index.index') }}" data="{{ url_for('static', filename='img/azulito.svg') }}" type="image/svg+xml" style="pointer-events: none;"></object>{% endblock %}
+      </div>
+  </a>
+  <!-- // -->
+
+  <div class="nav-items">
+      <!-- Enlaces de navegacion -->
+      <a class="nav-item" href="{{ url_for('bodega.addBodega') }}">Bodega</a>
+      <a class="nav-item" href="{{ url_for('catalogo.addCatalogo') }}">Catálogo</a>
+      <a class="nav-item" href="#">Añada</a>
+  </div>
+      
+  <!-- // -->
+  </div>
+</nav>
+<!-- // -->
+
+<form action="{{ url_for('catalogo.addCatalogo') }}" method="POST" class="form-control" enctype="multipart/form-data">   
     <!-- Informacion de Vino -->
     <div class="vino-info">    
         <div class="row group">
@@ -28,7 +50,7 @@
                 <div class="form-group">
                     <label>Clasificacion</label>
                     <select id="cat-nombreCla" name="cat-nombreCla">
-                        <option value="">Selecciona un tipo</option>
+                        <option value="">Selecciona una clasificacion</option>
                         {% for tipo in get_tipo1 %}
                             {% if tipo.nombre|lower == "especiales" %}
                                 <option value="{{ tipo.nombre }}">{{ tipo.nombre|capitalize }} (tintos)</option>
@@ -42,11 +64,11 @@
 
             <div class="column">
                 <div class="form-group">
-                    <label>-</label>
+                    <label class="eliminar-ralla">-</label>
                     <select id="cat-nombreCla2" name="cat-nombreCla2">
-                    <option value="">Selecciona un tipo</option>
+                    <option value="">Selecciona una subclasificacion</option>
                     {% for tipo2 in get_tipo2 %}
-                        <option value="{{ tipo2.nombre }}">{{ tipo2.nombre }}</option>
+                        <option value="{{ tipo2[1] }}">{{ tipo2[0] }}</option>
                     {% endfor %}
                     </select>
                 </div>
@@ -114,13 +136,12 @@
     <!-- // -->
 
     <!-- Zona de Variedad -->
-    <div class="variedad">
+    <div class="variedad" id="variedades">
         <div class="row group">
-
             <div class="column">
                 <div class="form-group">
                     <label>Nombre variedad</label>
-                    <select id="cat-nombre-variedad" name="cat-nombre-variedad">
+                    <select id="cat-nombre-variedad" name="cat-nombre-variedad[]">
                         <option value="">Selecciona el nombre</option>
                         {% for uva in get_uva %}
                             <option value="{{ uva.id_uva }}">{{ uva.nombre_variedad }} ({{ uva.tipo_uva }})</option>
@@ -129,16 +150,17 @@
                 </div>
             </div>
         </div>
+        <button type="button" id="add-variedad">Agregar otra variedad</button>
     </div>
     <!-- // -->
 
     <!-- Zona de presentacion -->
-    <div class="presentacion">
+    <div class="presentacion" id="presentaciones">
         <div class="row">
             <div class="column">
                 <div class="form-group">
                     <label>Tipo Presentacion</label>
-                    <select id="cat-tipo" name="cat-tipo">
+                    <select id="cat-tipo" name="cat-tipo[]">
                         <option value="">Selecciona un tipo</option>
                         {% for presentacion in get_pre %}
                             <option value="{{ presentacion }}">{{ presentacion|capitalize }}</option>
@@ -149,12 +171,14 @@
             
             <div class="column">
                 <label for="cat-cantidad-botellas">Cantidad de Botellas</label>
-                <input type="number" id="cat-cantidad-botellas" name="cat-cantidad-botellas" placeholder="Número de botellas" required>
+                <input type="number" id="cat-cantidad-botellas" name="cat-cantidad-botellas[]" placeholder="Número de botellas" required>
             </div>
         </div>
 
         <label for="cat-descripcion">Descripción</label>
-        <textarea id="cat-descripcion" name="cat-descripcion" placeholder="Descripción de la presentacion" required></textarea>
+        <textarea id="cat-descripcion" name="cat-descripcion[]" placeholder="Descripción de la presentacion" required></textarea>
+
+        <button type="button" id="add-presentacion">Agregar otra presentacion</button>
     </div>
     <!-- // -->
   
@@ -171,6 +195,7 @@
 <!-- ZONA DE SCRIPTS -->
 <!-- Funcion para que funcione el seleccionar clasificacion 2 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script>
 $(document).ready(function() {
     $('#cat-nombreCla').change(function() {
@@ -183,7 +208,7 @@ $(document).ready(function() {
                 var clasSelect = $('#cat-nombreCla2');
                 clasSelect.empty();
                 $.each(response, function(index, clasificacion) {
-                    clasSelect.append($('<option></option>').attr('value', clasificacion).text(clasificacion));
+                    clasSelect.append($('<option></option>').attr('value', clasificacion[1]).text(clasificacion[0]));
                 });
             },
             error: function(error) {
@@ -192,7 +217,92 @@ $(document).ready(function() {
         });
     });
 });
+// // 
+
+// Para que funcione la entrada multiple de datos en variedad
+var variedadIndex = 0;
+
+document.getElementById('add-variedad').addEventListener('click', function() {
+    var variedades = document.getElementById('variedades');
+    var newVariedad = document.createElement('div');
+    newVariedad.className = 'variedad';
+    newVariedad.innerHTML = `
+    <div class="row group">
+        <div class="column">
+            <div class="form-group">
+                <label>Nombre variedad</label>
+                <select id="cat-nombre-variedad-" name="cat-nombre-variedad[]">
+                    <option value="">Selecciona el nombre</option>
+                    {% for uva in get_uva %}
+                        <option value="{{ uva.id_uva }}">{{ uva.nombre_variedad }} ({{ uva.tipo_uva }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="remove-variedad">Eliminar</button>
+    `;
+    variedades.appendChild(newVariedad);
+    variedadIndex++;
+});
+
+// Remover un elemento variedad
+document.getElementById('variedades').addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('remove-variedad')) {
+        e.target.parentNode.remove();
+    }
+});
+// //
+// //
+
+
+// Para que funcione la entrada multiple de datos en presentacion
+var presentacionIndex = 0;
+
+document.getElementById('add-presentacion').addEventListener('click', function() {
+    var presentaciones = document.getElementById('presentaciones');
+    var newPresentacion = document.createElement('div');
+    newPresentacion.className = 'presentacion';
+    newPresentacion.innerHTML = `
+    <div class="row">
+            <div class="column">
+                <div class="form-group">
+                    <label>Tipo Presentacion</label>
+                    <select id="cat-tipo-" name="cat-tipo[]">
+                        <option value="">Selecciona un tipo</option>
+                        {% for presentacion in get_pre %}
+                            <option value="{{ presentacion }}">{{ presentacion|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="column">
+                <label for="cat-cantidad-botellas-">Cantidad de Botellas</label>
+                <input type="number" id="cat-cantidad-botellas-" name="cat-cantidad-botellas[]" placeholder="Número de botellas" required>
+            </div>
+        </div>
+
+        <label for="cat-descripcion-">Descripción</label>
+        <textarea id="cat-descripcion-" name="cat-descripcion[]" placeholder="Descripción de la presentacion" required></textarea>
+        <button type="button" class="remove-presentacion">Eliminar</button>
+    `;
+    presentaciones.appendChild(newPresentacion);
+    presentacionIndex++;
+});
+
+// Remover un elemento presentacion
+document.getElementById('presentaciones').addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('remove-presentacion')) {
+        e.target.parentNode.remove();
+    }
+});
+// //
+
 </script>
 <!-- // -->
+
+<!-- // -->
+
 
 {% endblock body %}
