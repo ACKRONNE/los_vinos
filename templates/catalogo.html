@@ -12,7 +12,7 @@
   <!-- logo -->
   <a href="{{ url_for('index.index') }}" style="pointer-events: auto;">
       <div href="{{ url_for('index.index') }}" class="nav-logo" style="width: 7rem;" style="pointer-events: auto;">
-          {% block logo %}<object class="logo" href="{{ url_for('index.index') }}" data="{{ url_for('static', filename='img/azulito.svg') }}" type="image/svg+xml" style="pointer-events: none;"></object>{% endblock %}
+          {% block logo %}<object class="logo" href="{{ url_for('index.index') }}" data="{{ url_for('static', filename='img/LogoBlue.svg') }}" type="image/svg+xml" style="pointer-events: none;"></object>{% endblock %}
       </div>
   </a>
   <!-- // -->
@@ -32,6 +32,7 @@
 <form action="{{ url_for('catalogo.addCatalogo') }}" method="POST" class="form-control" enctype="multipart/form-data">   
     <!-- Informacion de Vino -->
     <div class="vino-info">    
+        <label class="top-label">Informacion Vino</label>
         <div class="row group">
 
             <div class="column">
@@ -76,11 +77,17 @@
 
         </div>
 
-        <label for="cat-nombre">Nombre</label>
-        <input type="text" id="cat-nombre" name="cat-nombre" placeholder="Nombre del vino" required>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; padding-bottom: 20px;">
+            <div class="nombre-vino">
+                <label for="cat-nombre">Nombre</label>
+                <input type="text" id="cat-nombre" name="cat-nombre" placeholder="Nombre del vino" required>
+            </div>
 
-        <label for="cat-imagen-vino">Imagen del Vino</label>
-        <input type="file" id="cat-imagen-vino" name="cat-imagen-vino" required>
+            <div>
+                <label for="cat-imagen-vino">Imagen del Vino</label>
+                <input type="file" id="cat-imagen-vino" name="cat-imagen-vino" required>
+            </div>
+        </div>
 
         <div class="row group">
             <div class="column">
@@ -137,6 +144,7 @@
 
     <!-- Zona de Variedad -->
     <div class="variedad" id="variedades">
+        <label class="top-label">Informacion Variedad</label>
         <div class="row group">
             <div class="column">
                 <div class="form-group">
@@ -156,6 +164,7 @@
 
     <!-- Zona de presentacion -->
     <div class="presentacion" id="presentaciones">
+        <label class="top-label">Informacion Presentaciones</label>
         <div class="row">
             <div class="column">
                 <div class="form-group">
@@ -171,12 +180,12 @@
             
             <div class="column">
                 <label for="cat-cantidad-botellas">Cantidad de Botellas</label>
-                <input type="number" id="cat-cantidad-botellas" name="cat-cantidad-botellas[]" placeholder="Número de botellas" required>
+                <input type="number" id="cat-cantidad-botellas" name="cat-cantidad-botellas[]" placeholder="Número de botellas">
             </div>
         </div>
 
         <label for="cat-descripcion">Descripción</label>
-        <textarea id="cat-descripcion" name="cat-descripcion[]" placeholder="Descripción de la presentacion" required></textarea>
+        <textarea id="cat-descripcion" name="cat-descripcion[]" placeholder="Descripción de la presentacion"></textarea>
 
         <button type="button" id="add-presentacion">Agregar otra presentacion</button>
     </div>

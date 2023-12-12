@@ -9,6 +9,14 @@ body {
     color: #0086FF;
 }
 
+.top-label {
+    font-weight: 500;
+    color: #0086FF;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    font-size: 1.5rem;
+}
+
 .p-container {
     display: flex;
     justify-content: center;
@@ -41,7 +49,7 @@ body {
     padding: 10px;
     margin-bottom: 30px;
     border-style: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #004288;
     color: #ddd;
     background: rgba(159, 159, 159, 0);
     box-sizing: border-box; /* Make sure padding doesn't affect the total width */
@@ -60,6 +68,7 @@ body {
     resize: vertical; /* Allows the user to vertically resize the textarea */
 }
 /* // */
+
 
 /* Zona de Presentacion */
 /* vino-form.css */
@@ -89,12 +98,17 @@ body {
 .presentacion textarea {
     width: 80%;
     padding: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     box-sizing: border-box; 
     border-style: none ;
     color: white;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #727272;
     background: rgba(0, 61, 128, 0);
+}
+
+.vino-info input[type="file"] {
+    margin-right: 100px;
+    border-bottom: none;
 }
 
 .vino-info textarea, .presentacion textarea {
@@ -114,6 +128,9 @@ body {
     margin-right: 0;
 }
 
+.nombre-vino {
+    width: 400px;
+}
 
 /* Flexbox for side-by-side inputs */
 .presentacion .row {
@@ -141,15 +158,39 @@ select {
     border-style: none;
     box-sizing: border-box;
     background: rgba(0, 61, 128, 0);
-    font-size: 16px;
     margin-bottom: 20px;
-    color: white;
+    color: #a4a4a4;
+    font-family: 'Alegreya Sans', sans-serif;
+}
+
+select:focus {
+    outline: none; 
 }
 
 option {
     color: black;
 }
 
+/* // */
+
+/* Boton agregar */
+#add-variedad,
+#add-presentacion,
+.remove-variedad,
+.remove-presentacion {
+    padding: 8px;
+    border-radius: 5px;
+    background: #00428865;
+    color: white;
+    font-weight: 400;
+    border-style: none;
+}
+
+.remove-variedad,
+.remove-presentacion {
+    background: #88000065;
+    color: white;
+}
 /* // */
 
 

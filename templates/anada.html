@@ -27,26 +27,27 @@
 </div>
 </nav>
 
-<!-- FIXME: Arreglar los atributos que son opcionales -->
 
 <!-- Action form -->
 <form action="{{ url_for('anada.addAnada') }}" method="POST" class="form-control">
     
-    <div class="anada-info">    
+    <div class="anada-info">  
+        <label class="top-label">Informacion Produccion</label>  
+        <div class="form-row">
+            <div class="form-group">
+                <label>Vino</label>
+                <select id="ana-id-vino" name="ana-id-vino">
+                <option value="">Selecciona un vino</option>
+                {% for vino in get_vin %}
+                    <option value="{{ vino.id_vino }}">{{ vino.nombre }}</option>
+                {% endfor %}
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label>Vino</label>
-            <select id="ana-id-vino" name="ana-id-vino">
-              <option value="">Selecciona un vino</option>
-              {% for vino in get_vin %}
-                  <option value="{{ vino.id_vino }}">{{ vino.nombre }}</option>
-              {% endfor %}
-            </select>
-        </div>
-
-        <div class="nombre-bod">
-            <label for="ana-ano-produccion">Bodega</label>
-            <div id="bodega-name">{{ bodega_name }}</div>
+            <div class="nombre-bod">
+                <label for="ana-ano-produccion">Bodega</label>
+                <div id="bodega-name">{{ bodega_name }}</div>
+            </div>
         </div>
 
         <label for="ana-ano-produccion">Año de Producción</label>

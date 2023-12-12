@@ -59,7 +59,7 @@ textarea {
     width: 100%;
     max-width: 75%; /* Asegura que el input no se salga del contenedor */
     padding: 0.5rem;
-    border-bottom: 1px solid #DFD3BD;
+    border-bottom: 1px solid #727272;
     font-size: 1rem;
     color: #DFD3BD;
     background-color: rgba(0, 0, 0, 0);
@@ -127,6 +127,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 1.2rem; /* Aumenta el tamaño de la fuente */
     color: #DFD3BD;
     background-color: rgba(0, 0, 0, 0);
+}
+
+select:focus {
+    outline: none; 
 }
 
 select#bod-nombrePai option,
