@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+
+{% block title %}Añada{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/anada.css') }}">
+
+<!-- Navbar -->
+<nav class="navbar">
+      
+  <!-- logo -->
+  <a href="{{ url_for('index.index') }}" style="pointer-events: auto;">
+      <div href="{{ url_for('index.index') }}" class="nav-logo" style="width: 7rem;" style="pointer-events: auto;">
+          {% block logo %}<object class="logo" href="{{ url_for('index.index') }}" data="{{ url_for('static', filename='img/LogoBlack.svg') }}" type="image/svg+xml" style="pointer-events: none;"></object>{% endblock %}
+      </div>
+  </a>
+  <!-- // -->
+
+  <div class="nav-items">
+      <!-- Enlaces de navegacion -->
+      <a class="nav-item" href="{{ url_for('bodega.addBodega') }}">Bodega</a>
+      <a class="nav-item" href="{{ url_for('catalogo.addCatalogo') }}">Catálogo</a>
+      <a class="nav-item" href="{{ url_for('anada.addAnada') }}">Añada</a>
+  </div>
+      
+  <!-- // -->
+</div>
+</nav>
+
+<!-- FIXME: Arreglar los atributos que son opcionales -->
+
+<!-- Action form -->
+<form action="{{ url_for('anada.addAnada') }}" method="POST" class="form-control">
+    
+    <div class="anada-info">    
+
+        <div class="form-group">
+            <label>Vino</label>
+            <select id="ana-id-vino" name="ana-id-vino">
+              <option value="">Selecciona un vino</option>
+              {% for vino in get_vin %}
+                  <option value="{{ vino.id_vino }}">{{ vino.nombre }}</option>
+              {% endfor %}
+            </select>
+        </div>
+
+        <div class="nombre-bod">
+            <label for="ana-ano-produccion">Bodega</label>
+            <div id="bodega-name">{{ bodega_name }}</div>
+        </div>
+
+        <label for="ana-ano-produccion">Año de Producción</label>
+        <input type="text" id="ana-ano-produccion" name="ana-ano-produccion" placeholder="Año de producción" required>
+
+        <label for="ana-botellas-producidas">Botellas Producidas</label>
+        <input type="number" id="ana-botellas-producidas" name="ana-botellas-producidas" placeholder="Número de botellas producidas" required>
+
+        <label for="ana-total-dest-exp-hl">Total Destinado a Exportación (hl)</label>
+        <input type="number" id="ana-total-dest-exp-hl" name="ana-total-dest-exp-hl" placeholder="Total destinado a exportación en hectolitros" required>
+
+        <label for="ana-clasificacion-ana">Clasificación de la Añada</label>
+        <select id="ana-clasificacion-ana" name="ana-clasificacion-anada" required>
+            <option value="">Selecciona una clasificación</option>
+            <option value="MB">Muy Buena</option>
+            <option value="B">Buena</option>
+            <option value="E">Excelente</option>
+        </select>
+    </div>
+
+    <div class="button-container">
+        <button class="submit-btn" type="submit">Aceptar</button>
+    </div>
+
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+// Para conseguir el nombre
+$(document).ready(function(){
+  $("#ana-id-vino").change(function(){
+    var id_vino = $(this).val();
+    $.post("{{ url_for('anada.get_bodega_name') }}", {'ana-id-vino': id_vino}, function(data){
+      $("#bodega-name").text(data.bodega_name);
+    });
+  });
+});
+// //
+
+// Para extraer la fecha
+var input = document.getElementById('ana-ano-produccion');
+    input.addEventListener('input', function () {
+        if (this.value.length > 4) 
+            this.value = this.value.slice(0,4); 
+    })
+// //
+
+</script>
+
+{% endblock body %}

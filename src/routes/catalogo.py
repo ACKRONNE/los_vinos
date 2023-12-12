@@ -2,8 +2,6 @@ from flask import Blueprint, render_template, request, flash, send_file, jsonify
 from sqlalchemy import select, or_, and_, distinct
 from sqlalchemy.orm import aliased
 from src.database.db import db
-from src.routes.index import ind
-
 
 # Librerias para las imagenes
 from io import BytesIO

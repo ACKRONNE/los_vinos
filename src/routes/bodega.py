@@ -1,10 +1,6 @@
-from flask import Blueprint, render_template, request, flash, jsonify, redirect
+from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
 from src.database.db import db
 from sqlalchemy import select
-
-# FIXME: Pasar estas librerias a catalogo
-from io import BytesIO
-from PIL import Image
 
 # Entidades
 from src.models.bodegas import Bodegas
@@ -14,7 +10,6 @@ from src.models.telefonos import Telefonos
 # //
 
 bod = Blueprint('bodega', __name__)
-
 
 
 # Agregar Bodega
@@ -88,7 +83,7 @@ def addBodega():
         flash("Telefono Agregado con exito")
         # //
 
-        return redirect('index.html')
+        return redirect(url_for('index.index'))
     else:
         return render_template('bodega.html', get_pai=get_pai)
 # //   
