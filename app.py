@@ -2,6 +2,7 @@ from flask import Flask
 from src.database.db import db
 
 # Objetos de las rutas
+from src.routes.anada import ana
 from src.routes.index import ind
 from src.routes.bodega import bod
 from src.routes.catalogo import cat
@@ -30,4 +31,5 @@ db.init_app(app)
 app.register_blueprint(ind)
 app.register_blueprint(bod)
 app.register_blueprint(cat)
+app.register_blueprint(ana)
 

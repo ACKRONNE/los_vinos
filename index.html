@@ -1,0 +1,51 @@
+<head>
+    <!-- Tipografia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    <!-- // -->
+
+    <!-- Archivos Internos CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+    <!-- // -->
+</head> 
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="nav-bar">
+        <div class="container">
+            <a href="{{ url_for('index.index') }}" style="pointer-events: auto;">
+                <div class="nav-logo" style="width: 5rem;">
+                    <object class="logo" href="../src/routes/index.py" data="{{ url_for('static', filename='img/LogoBlack.svg') }}" type="image/svg+xml"></object>
+                </div>
+            </a>
+
+            <!-- center items -->
+            <div class="container-midle">
+                <div class="nav-link">
+                    <a href="{{ url_for('bodega.addBodega') }}">Bodega</a>
+                </div>
+                
+                <div class="nav-link">
+                    <a href="{{ url_for('catalogo.addCatalogo') }}">Catálogo</a>
+                </div>
+            </div>
+            <!-- // -->
+            
+            <div class="nav-link">
+                <a href="{{ url_for('anada.addAnada') }}">Añada</a>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Video de fondo -->
+    <div class="video-container">
+        <video src="../static/video/wineVideo.mp4" autoplay loop muted></video>
+    </div>
+    <!-- // -->
+
+</body>
+    
