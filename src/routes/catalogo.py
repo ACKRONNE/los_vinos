@@ -1,12 +1,9 @@
-from flask import Blueprint, render_template, request, flash, send_file, jsonify, redirect, url_for
-from sqlalchemy import select, or_, and_, distinct
+from flask import Blueprint, render_template, request, send_file, jsonify, redirect, url_for
+from sqlalchemy import select, or_, and_, distinct, text
+from sqlalchemy.orm import Session
 from sqlalchemy.orm import aliased
 from src.database.db import db
 
-# Librerias para las imagenes
-from io import BytesIO
-from PIL import Image
-# //
 
 # Entidades
 from src.models.bodegas import Bodegas
@@ -24,6 +21,8 @@ cat = Blueprint('catalogo', __name__)
 @cat.route('/add_catalogo', methods=['GET','POST'])
 def addCatalogo():
     
+    session = Session(bind=db.engine)
+    
     get_bod = Bodegas.query.all()
         
     get_tipo1 = Clasificaciones.query.filter(or_(Clasificaciones.nivel == 1, Clasificaciones.id_clasificacion == 140)).all()
@@ -33,136 +32,81 @@ def addCatalogo():
     
     if request.method == "POST":
         
-        # Nombre de la bodega
-        _nombreBod = request.form['cat-nombreBod']
-        _id_bodega = select(Bodegas.id_bodega).where(Bodegas.nombre == _nombreBod).scalar_subquery()
-        _id_pais_pro = db.session.query(Bodegas.id_pais_pro).filter(Bodegas.id_bodega == _id_bodega)
-        _id_region = db.session.query(Bodegas.id_region).filter(Bodegas.id_bodega == _id_bodega)
-        # //
         
-        # Clasificacion
-        _id_Clasificacion = request.form['cat-nombreCla2']
-        print(_id_Clasificacion)
-        # //
-        
-        # Captula de datos de vino_marca
-        _nombre = request.form['cat-nombre']
-        _meses_maduracion = request.form['cat-meses-maduracion']
-        _elaboracion = request.form['cat-elaboracion']
-        _maridaje = request.form['cat-maridaje']
-        _promedio_anos_consumo = request.form['cat-promedio-anos-consumo']
-        _temp_servicio = request.form['cat-temp-servicio']
-        _ph = request.form['cat-ph']
-        _descripcion_cata = request.form['cat-descripcion-cata']
-        _grado_alcohol = request.form['cat-grado-alcohol']
-        _acidez = request.form['cat-acidez']
-        _imagen_vino = request.files['cat-imagen-vino']
-        # //
+        try:
+            # Comenzar una nueva transaccion
+            session.begin()
             
-        _imagen_data = _imagen_vino.read()
+            # Captura de datos general
+            _nombreBod = request.form['cat-nombreBod']
+            _id_bodega = db.session.query(Bodegas.id_bodega).filter(Bodegas.nombre == _nombreBod).scalar()
+            _id_pais_pro = db.session.query(Bodegas.id_pais_pro).filter(Bodegas.id_bodega == _id_bodega).scalar()
+            _id_region = db.session.query(Bodegas.id_region).filter(Bodegas.id_bodega == _id_bodega).scalar()
+            
+            # Clasificacion
+            _id_Clasificacion = int(request.form['cat-nombreCla2'])
         
-        new_vin = VinoMarca(
-            _id_pais_pro,
-            _id_region,
-            _id_bodega,
-            _nombre,
-            _meses_maduracion,
-            _elaboracion,
-            _maridaje,
-            _promedio_anos_consumo,
-            _temp_servicio,
-            _ph,
-            _descripcion_cata,
-            _grado_alcohol,
-            _acidez,
-            _imagen_data,
-            _id_Clasificacion,
-        )
-
-        db.session.add(new_vin)
-
-        flash("Vino Agregado con exito")
-        
-        _id_vino = db.session.query(VinoMarca.id_vino).filter(
-            and_(
-                VinoMarca.id_pais_pro == _id_pais_pro,
-                VinoMarca.id_region == _id_region,
-                VinoMarca.id_bodega == _id_bodega,
-                VinoMarca.nombre == _nombre
-            )
-        ).first().id_vino
-        
-        # PRESENTACION
-        # Captura de datos de presentacion
-        _tipo = request.form.getlist('cat-tipo[]')
-        _descripcion = request.form.getlist('cat-descripcion[]')
-        _cantidad_botellas = request.form.getlist('cat-cantidad-botellas[]')
-        # //
-        
-        # Inserccion de Presentacion
-        for tipo, descripcion, cantidad in zip(_tipo, _descripcion, _cantidad_botellas,):
-            new_pre = Presentacion(
-                _id_pais_pro,
-                _id_region,
-                _id_bodega,
-                _id_vino,
-                tipo,
-                descripcion,
-                cantidad
-            )
-            db.session.add(new_pre)
+            # Captura de datos de vino_marca
+            _nombre = request.form['cat-nombre']
+            _meses_maduracion = int(request.form['cat-meses-maduracion'])
+            _elaboracion = request.form['cat-elaboracion']
+            _maridaje = request.form['cat-maridaje']
+            _promedio_anos_consumo = int(request.form['cat-promedio-anos-consumo'])
+            _temp_servicio = int(request.form['cat-temp-servicio'])
+            _ph = float(request.form['cat-ph'])
+            _descripcion_cata = request.form['cat-descripcion-cata']
+            _grado_alcohol = float(request.form['cat-grado-alcohol'])
+            _acidez = float(request.form['cat-acidez'])
+            _imagen_vino = request.files['cat-imagen-vino']
                     
-        flash("Presentacion Agregada con exito")
-        # //
-        # //
+            _imagen_data = _imagen_vino.read()
         
-        # VARIEDAD VINO
-        _id_uva = request.form.getlist('cat-nombre-variedad[]')
-        # //
+            # Captura de datos de Presentacion
+            _tipo = request.form.getlist('cat-tipo[]')
+            _descripcion = request.form.getlist('cat-descripcion[]')
+            _cantidad_botellas = list(map(int, request.form.getlist('cat-cantidad-botellas[]')))
+            
+            # Captura de datos de Variedad
+            _id_uva = list(map(int, request.form.getlist('cat-nombre-variedad[]')))
 
-        # Inserccion de Variedad Vino
-        for uva in _id_uva:
-            new_var = VariedadVino(
-                _id_pais_pro,
-                _id_region,
-                _id_bodega,
-                _id_vino,
-                uva
-            )
-            db.session.add(new_var)
-
-        flash("Variedad Agregada con exito")
-        # //
-        # //
-        db.session.commit()
-        db.session.close()
+            session.execute(text("SELECT insert_into_vino_presentacion_variedad(:id_pais_pro, :id_region, :id_bodega, :nombre, :meses_maduracion, :elaboracion, :maridaje, :promedio_anos_consumo, :temp_servicio, :ph, :descripcion_cata, :grado_alcohol, :acidez, :imagen_data, :id_clasificacion, :tipo, :descripcion, :cantidad_botellas, :id_uva)"), 
+                            {
+                                "id_pais_pro": _id_pais_pro,
+                                "id_region": _id_region,
+                                "id_bodega": _id_bodega,
+                                "nombre": _nombre,
+                                "meses_maduracion": _meses_maduracion,
+                                "elaboracion": _elaboracion,
+                                "maridaje": _maridaje,
+                                "promedio_anos_consumo": _promedio_anos_consumo,
+                                "temp_servicio": _temp_servicio,
+                                "ph": _ph,
+                                "descripcion_cata": _descripcion_cata,
+                                "grado_alcohol": _grado_alcohol,
+                                "acidez": _acidez,
+                                "imagen_data": _imagen_data,
+                                "id_clasificacion": _id_Clasificacion,
+                                "tipo": _tipo,
+                                "descripcion": _descripcion,
+                                "cantidad_botellas": _cantidad_botellas,
+                                "id_uva": _id_uva
+                            }
+                        )
+            # //
+            db.session.commit()
+            db.session.close()
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+        
         
         return redirect(url_for('index.index'))
     else:
         return render_template('catalogo.html', get_bod=get_bod, get_tipo1=get_tipo1, get_pre=get_pre, get_uva=get_uva)
 # //   
-
-# FIXME: Falta definir el tamaño de las imagenes
-# Guardar imagenes en la BD
-@cat.route('/show_image/<int:id_vino>', methods=['GET'])
-def showImage(id_vino):
-    bodega = VinoMarca.query.get(id_vino)
-    
-    if bodega is None or bodega.imagen is None:
-        return "Imagen no encontrada"
-    
-    imagen = Image.open(BytesIO(bodega.imagen))
-    
-    # Crear un objeto BytesIO para almacenar la imagen
-    img_io = BytesIO()
-    
-    # Guardar la imagen en el objeto BytesIO en formato JPEG
-    imagen.save(img_io, 'JPEG')
-    img_io.seek(0)
-    
-    # Devolver la imagen como respuesta
-    return send_file(img_io, mimetype='image/jpeg')
-# //
 
 # Obtener las subclasificaciones
 @cat.route('/get_clas', methods=['POST'])

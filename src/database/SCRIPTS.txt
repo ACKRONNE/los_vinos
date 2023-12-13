@@ -1,4 +1,4 @@
--- S E C U E N C I A S
+-- SECUENCIAS ----------------------------------------------------------------------------------------
 
 CREATE SEQUENCE seq_paispro
   START WITH 7
@@ -74,9 +74,9 @@ CREATE SEQUENCE seq_muestracompite
   START WITH 50
   INCREMENT BY 1
   MAXVALUE 999;
--- / /
+-- FIN SECUENCIAS 			/ /
 
--- C R E A T E S
+-- CREATES ----------------------------------------------------------------------------------------
 
 CREATE TABLE paises_productores ( 
 	id_pais_pro 			numeric(3) 		PRIMARY KEY DEFAULT NEXTVAL('seq_paispro'),
@@ -132,11 +132,11 @@ CREATE TABLE exportacion_pais_anual (
 );
 
 CREATE TABLE telefonos ( 
-	id_pais_pro 			numeric(3) 		NOT NULL,
-	id_region 				numeric(3) 		NOT NULL,
-	id_bodega 				numeric(3) 		NOT NULL,
-	codigo_area 			numeric(4) 		NOT NULL,
-	numero 					numeric(10) 	NOT NULL, 
+	 		NOT NULL,
+			NOT NULL,
+			NOT NULL,
+	 		NOT NULL,
+	NOT NULL, 
 	CONSTRAINT fk_tlf_bodega FOREIGN KEY (id_pais_pro, id_region, id_bodega) REFERENCES bodegas (id_pais_pro,id_region,id_bodega),
 	CONSTRAINT pk_tlf PRIMARY KEY (id_pais_pro, id_region, id_bodega, codigo_area, numero)
 );
@@ -369,7 +369,143 @@ CREATE TABLE muestra_compite (
 	CONSTRAINT fk_muestracompite_vino FOREIGN KEY (id_pais_pro, id_region, id_bodega, id_vino) REFERENCES vino_marca (id_pais_pro, id_region, id_bodega, id_vino),
 	CONSTRAINT pk_muestracompite PRIMARY KEY (id_concurso, numero_edicion, id_participacion, id_muestra_compite)
 );
--- / /
+-- FIN CREATE 			//
+
+-- ALTER ----------------------------------------------------------------------------------------
 
 ALTER TABLE vitis_vinifera
 ADD CONSTRAINT uni_compues_nom_tipo UNIQUE (nombre_variedad,tipo_uva);
+
+-- FIN ALTER 			//
+
+-- FUNCIONES ----------------------------------------------------------------------------------------
+
+-- Insertar Bodega y telefono
+CREATE OR REPLACE FUNCTION insert_into_bod_tel(
+    id_region numeric(3),
+    id_pais_pro numeric(3),
+    nombre varchar(50),
+    historia varchar(1500),
+    enlace_web varchar(50),
+    direccion varchar(200),
+    fecha_fundacion date,
+    resumen_vinos varchar(1500),
+    codigo_area numeric[],
+    numero numeric[]
+    )
+RETURNS void AS $$
+DECLARE
+    _id_bodega numeric(3);
+    i integer := 1;
+BEGIN
+    -- Insert into the first table and get the generated id
+    INSERT INTO bodegas (
+        id_pais_pro,
+        id_region,
+        nombre,
+        historia,
+        enlace_web,
+        direccion,
+        fecha_fundacion,
+        resumen_vinos
+        )
+    VALUES (
+        id_pais_pro,
+        id_region,
+        nombre,
+        historia,
+        enlace_web,
+        direccion,
+        fecha_fundacion,
+        resumen_vinos
+    )
+    RETURNING id_bodega INTO _id_bodega;
+
+    WHILE i <= array_length(codigo_area, 1) LOOP
+        INSERT INTO telefonos (
+            id_pais_pro,
+            id_region,
+            id_bodega,
+            codigo_area,
+            numero
+            )
+        VALUES (
+            id_pais_pro,
+            id_region,
+            _id_bodega,
+            codigo_area[i]::numeric,
+            numero[i]::numeric
+            );
+        i := i + 1;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+-- //
+
+-- Conversion monetaria
+CREATE OR REPLACE FUNCTION conversion_monetaria(precio_euro NUMERIC)
+RETURNS NUMERIC AS
+$$
+DECLARE
+  resultadof NUMERIC;
+BEGIN
+  resultadof := precio_euro * 1.10;
+  RETURN resultadof;
+END;
+$$
+LANGUAGE plpgsql;
+
+-- forma de llamarla
+select conversion_monetaria(2);
+-- //
+
+-- Validar URL
+CREATE OR REPLACE FUNCTION check_url() RETURNS TRIGGER AS $$
+BEGIN
+ IF NEW.url NOT LIKE 'http://%' AND NEW.url NOT LIKE 'https://%' AND NEW.url NOT LIKE 'www.%' THEN
+   RAISE EXCEPTION 'URL no válida: %', NEW.url;
+ END IF;
+ RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+-- //
+
+-- 
+
+-- Suma las botellas producidas por año de una bodega
+CREATE OR REPLACE FUNCTION calcular_produccion_anual(id_pais_pro_in numeric, id_region_in numeric, id_bodega_in numeric, ano_produccion_in date)
+RETURNS integer AS
+$$
+DECLARE
+    total_botellas integer;
+BEGIN
+    -- Calcular la producción anual
+    SELECT COALESCE(SUM(botellas_producidas), 0)
+    INTO total_botellas
+    FROM produccion_anual_vino
+    WHERE id_pais_pro = id_pais_pro_in
+        AND id_region = id_region_in
+        AND id_bodega = id_bodega_in
+        AND EXTRACT(YEAR FROM ano_produccion) = EXTRACT(YEAR FROM ano_produccion_in);
+
+    RETURN total_botellas;
+END;
+$$
+LANGUAGE plpgsql;
+--
+
+
+-- FIN FUNCIONES 				//
+
+-- PROCEDIMIENTOS ----------------------------------------------------------------------------------------
+-- FIN PROCEDIMIENTOS			// 
+
+-- TRIGGERS ----------------------------------------------------------------------------------------
+
+-- Para validar la entrada de url
+CREATE TRIGGER check_url_trigger
+BEFORE INSERT OR UPDATE ON urls
+FOR EACH ROW EXECUTE PROCEDURE check_url();
+-- //
+
+-- FIN TRIGGERS 			//

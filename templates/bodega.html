@@ -79,18 +79,18 @@
   <div class="info-contacto">
     <div class="left-column">
       <label class="main-label">Informacion de Contacto</label>
+      <!-- Zona de telefono -->
+      <div id="telefonos">
+          <div class="telefono">
+              <label for="tlf-codigo-area">Codigo de Area</label>
+              <input type="text" id="tlf-codigo-area" name="tlf-codigo-area[]" placeholder="Codigo de Area" required>
 
-      <div class="inputs">
-        <div class="form-group">
-          <label for="tlf-codigo_area">Codigo de Area</label>
-          <input type="text" id="tlf-codigo_area" name="tlf-codigo-area" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="tlf-numero">Numero de Telefono</label>
-          <input type="text" id="tlf-numero" name="tlf-numero" required>
-        </div>
+              <label for="tlf-numero">Numero</label>
+              <input type="text" id="tlf-numero" name="tlf-numero[]" placeholder="Numero" required>
+          </div>
       </div>
+      <button type="button" id="add-telefono">Agregar otro telefono</button>
+      <!-- // -->
     </div>
 
     <!-- Columna derecha contacto -->
@@ -151,7 +151,38 @@ $(document).ready(function() {
         });
     });
 });
+// //
+
+// Query para agregar telefonos
+// Para que funcione la entrada multiple de datos en telefono
+var telefonoIndex = 0;
+
+document.getElementById('add-telefono').addEventListener('click', function() {
+    var telefonos = document.getElementById('telefonos');
+    var newTelefono = document.createElement('div');
+    newTelefono.className = 'telefono';
+    newTelefono.innerHTML = `
+        <label for="tlf-codigo-area-">Codigo de Area</label>
+        <input type="text" id="tlf-codigo-area-" name="tlf-codigo-area[]" placeholder="Codigo de Area" required>
+
+        <label for="tlf-numero-">Numero</label>
+        <input type="text" id="tlf-numero-" name="tlf-numero[]" placeholder="Numero" required>
+        <button type="button" class="remove-telefono">Eliminar</button>
+    `;
+    telefonos.appendChild(newTelefono);
+    telefonoIndex++;
+});
+// //
+
+// Remover un elemento telefono
+document.getElementById('telefonos').addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('remove-telefono')) {
+        e.target.parentNode.remove();
+    }
+});
+// //
 </script>
+
 <!-- // -->
 
 {% endblock body %}
