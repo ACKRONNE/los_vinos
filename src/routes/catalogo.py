@@ -44,7 +44,7 @@ def addCatalogo():
             _id_region = db.session.query(Bodegas.id_region).filter(Bodegas.id_bodega == _id_bodega).scalar()
             
             # Clasificacion
-            _id_Clasificacion = int(request.form['cat-nombreCla2'])
+            _id_Clasificacion = int(request.form.get('cat-nombreCla2'))
         
             # Captura de datos de vino_marca
             _nombre = request.form['cat-nombre']
@@ -67,34 +67,31 @@ def addCatalogo():
             _cantidad_botellas = list(map(int, request.form.getlist('cat-cantidad-botellas[]')))
             
             # Captura de datos de Variedad
-            _id_uva = list(map(int, request.form.getlist('cat-nombre-variedad[]')))
+            _id_uva = request.form.getlist('cat-nombre-variedad[]')
 
             session.execute(text("SELECT insert_into_vino_presentacion_variedad(:id_pais_pro, :id_region, :id_bodega, :nombre, :meses_maduracion, :elaboracion, :maridaje, :promedio_anos_consumo, :temp_servicio, :ph, :descripcion_cata, :grado_alcohol, :acidez, :imagen_data, :id_clasificacion, :tipo, :descripcion, :cantidad_botellas, :id_uva)"), 
-                            {
-                                "id_pais_pro": _id_pais_pro,
-                                "id_region": _id_region,
-                                "id_bodega": _id_bodega,
-                                "nombre": _nombre,
-                                "meses_maduracion": _meses_maduracion,
-                                "elaboracion": _elaboracion,
-                                "maridaje": _maridaje,
-                                "promedio_anos_consumo": _promedio_anos_consumo,
-                                "temp_servicio": _temp_servicio,
-                                "ph": _ph,
-                                "descripcion_cata": _descripcion_cata,
-                                "grado_alcohol": _grado_alcohol,
-                                "acidez": _acidez,
-                                "imagen_data": _imagen_data,
-                                "id_clasificacion": _id_Clasificacion,
-                                "tipo": _tipo,
-                                "descripcion": _descripcion,
-                                "cantidad_botellas": _cantidad_botellas,
-                                "id_uva": _id_uva
-                            }
-                        )
+            {
+                "id_pais_pro": _id_pais_pro,
+                "id_region": _id_region,
+                "id_bodega": _id_bodega,
+                "nombre": _nombre,
+                "meses_maduracion": _meses_maduracion,
+                "elaboracion": _elaboracion,
+                "maridaje": _maridaje,
+                "promedio_anos_consumo": _promedio_anos_consumo,
+                "temp_servicio": _temp_servicio,
+                "ph": _ph,
+                "descripcion_cata": _descripcion_cata,
+                "grado_alcohol": _grado_alcohol,
+                "acidez": _acidez,
+                "imagen_data": _imagen_data,
+                "id_clasificacion": _id_Clasificacion,
+                "tipo": _tipo,
+                "descripcion": _descripcion,
+                "cantidad_botellas": _cantidad_botellas,
+                "id_uva": _id_uva
+            })
             # //
-            db.session.commit()
-            db.session.close()
             session.commit()
         except:
             session.rollback()

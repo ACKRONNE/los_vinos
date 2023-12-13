@@ -132,11 +132,11 @@ CREATE TABLE exportacion_pais_anual (
 );
 
 CREATE TABLE telefonos ( 
-	 		NOT NULL,
-			NOT NULL,
-			NOT NULL,
-	 		NOT NULL,
-	NOT NULL, 
+	id_pais_pro 			numeric(3) 		NOT NULL,
+	id_region 				numeric(3) 		NOT NULL,
+	id_bodega 				numeric(3) 		NOT NULL,
+	codigo_area 			numeric(3) 		NOT NULL,
+	numero 					numeric(10) 	NOT NULL, 
 	CONSTRAINT fk_tlf_bodega FOREIGN KEY (id_pais_pro, id_region, id_bodega) REFERENCES bodegas (id_pais_pro,id_region,id_bodega),
 	CONSTRAINT pk_tlf PRIMARY KEY (id_pais_pro, id_region, id_bodega, codigo_area, numero)
 );

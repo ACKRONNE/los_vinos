@@ -57,33 +57,32 @@ END;
 $$ LANGUAGE plpgsql;
 -- //
 
--- Insertar vino, presentacion y variedad
 CREATE OR REPLACE FUNCTION insert_into_vino_presentacion_variedad(
     id_pais_pro numeric(3),
-    id_region  numeric(3),
-    id_bodega  numeric(3),
+    id_region numeric(3),
+    id_bodega numeric(3),
     nombre varchar(70),
-    meses_maduracion  numeric(2),
-    elaboracion  varchar(1500),
+    meses_maduracion numeric(2),
+    elaboracion varchar(1500),
     maridaje varchar(500),
-    promedio_anos_consumo int,
-    temp_servicio int,
-    ph decimal(4,2),
+    promedio_anos_consumo integer,
+    temp_servicio integer,
+    ph numeric(4,2),
     descripcion_cata varchar(1500),
-    grado_alcohol decimal(4,2),
-    acidez decimal(4,2),
-    imagen_vino bytea,
+    grado_alcohol numeric(4,2),
+    acidez numeric(4,2),
+    imagen_data bytea,
     id_clasificacion numeric(3),
-    tipo varchar(10)[],
-    descripcion varchar(700)[],
-    cantidad_botellas int[],
-    id_uva integer[]
+    tipo varchar[],
+    descripcion varchar[],
+    cantidad_botellas integer[],
+    id_uva text[]
 ) RETURNS VOID AS $$
 DECLARE
     _id_vino numeric(3);
-    i integer := 1;
-    j integer := 1;
+    _id_uva text;
 BEGIN
+    -- Insertar en vino_marca y obtener la nueva PK
     INSERT INTO vino_marca (
         id_pais_pro,
         id_region,
@@ -114,49 +113,51 @@ BEGIN
         descripcion_cata,
         grado_alcohol,
         acidez,
-        imagen_vino,
+        imagen_data,
         id_clasificacion
-    ) RETURNING id_vino INTO _id_vino;
+    )
+    RETURNING id_vino INTO _id_vino;
 
-    WHILE i <= array_length(tipo, 1) LOOP
-        INSERT INTO presentacion (
-            id_pais_pro,
-            id_region,
-            id_bodega,
-            id_vino,
-            tipo,
-            descripcion,
-            cantidad_botellas
+    -- Insertar en presentacion usando la nueva PK
+    FOR i IN 1..array_length(tipo, 1) LOOP
+       INSERT INTO presentacion (
+        id_pais_pro, 
+        id_region, 
+        id_bodega, 
+        id_vino, 
+        tipo, 
+        descripcion, 
+        cantidad_botellas
         ) VALUES (
-            id_pais_pro,
-            id_region,
-            id_bodega,
-            _id_vino,
-            tipo[i]::varchar(10),
-            descripcion[i]::varchar(700),
-            cantidad_botellas[i]::integer
-        );
-        i:= i + 1;
+            id_pais_pro, 
+            id_region, 
+            id_bodega, 
+            _id_vino, 
+            tipo[i], 
+            descripcion[i], 
+            cantidad_botellas[i]);
     END LOOP;
 
-    WHILE j <= array_length(id_uva, 1) LOOP
-        INSERT INTO variedad_vino (
-            id_pais_pro,
-            id_region,
-            id_bodega,
-            id_vino,
-            id_uva
+    -- Insertar en la tabla VariedadVino
+    FOREACH _id_uva IN ARRAY id_uva LOOP
+    INSERT INTO variedad_vino (
+        id_pais_pro, 
+        id_region, 
+        id_bodega, 
+        id_vino, 
+        id_uva
         ) VALUES (
-            id_pais_pro,
-            id_region,
-            id_bodega,
-            _id_vino,
-            id_uva[j]::numeric
+            id_pais_pro, 
+            id_region, 
+            id_bodega, 
+            _id_vino, 
+            _id_uva::numeric(3)
         );
-        j:= j + 1;
     END LOOP;
+
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- Insertar Produccion
 CREATE OR REPLACE FUNCTION insert_into_produccion(
